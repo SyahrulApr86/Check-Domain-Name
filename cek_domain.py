@@ -22,10 +22,6 @@ driver = webdriver.Chrome(options=chrome_options)
 with open('tlds.txt', 'r') as file:
     tlds = [line.strip().lower() for line in file]
 
-# File output untuk menyimpan TLD yang tersedia dan tidak tersedia
-available_tlds_file = open('available_tlds.txt', 'w')
-not_available_tlds_file = open('not_available_tlds.txt', 'w')
-
 try:
     for tld in tlds:
         domain_name = f"rul.{tld}"
@@ -52,12 +48,12 @@ try:
         # Periksa apakah teks yang menunjukkan domain tersedia ada di halaman
         if "Selamat! Domain yang Anda Cari Tersedia" in driver.page_source:
             print("[+] Tersedia")
-            available_tlds_file.write(domain_name + '\n')
+            with open('available_tlds.txt', 'a') as available_tlds_file:
+                available_tlds_file.write(domain_name + '\n')
         else:
             print("[x] Tidak Tersedia")
-            not_available_tlds_file.write(domain_name + '\n')
+            with open('not_available_tlds.txt', 'a') as not_available_tlds_file:
+                not_available_tlds_file.write(domain_name + '\n')
 finally:
     # Tutup browser
     driver.quit()
-    available_tlds_file.close()
-    not_available_tlds_file.close()
