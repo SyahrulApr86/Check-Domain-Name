@@ -5,20 +5,20 @@ from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.chrome.options import Options
 import time
 
-# Menginstal ChromeDriver yang kompatibel secara otomatis
+# Automatically install the compatible ChromeDriver
 chromedriver_autoinstaller.install()
 
-# Mengatur opsi untuk mode headless
+# Set options for headless mode
 chrome_options = Options()
-chrome_options.add_argument("--headless")  # Menjalankan secara headless
-chrome_options.add_argument("--disable-gpu")  # Mengurangi penggunaan GPU
-chrome_options.add_argument("--no-sandbox")  # Mencegah masalah izin
-chrome_options.add_argument("--disable-dev-shm-usage")  # Menghindari masalah memori bersama
+chrome_options.add_argument("--headless")  # Run in headless mode
+chrome_options.add_argument("--disable-gpu")  # Reduce GPU usage
+chrome_options.add_argument("--no-sandbox")  # Prevent permission issues
+chrome_options.add_argument("--disable-dev-shm-usage")  # Avoid shared memory issues
 
-# Membuat instance driver dengan opsi headless
+# Create a Chrome driver instance with headless options
 driver = webdriver.Chrome(options=chrome_options)
 
-# Membaca TLD dari file
+# Read TLDs from the file
 with open('tlds.txt', 'r') as file:
     tlds = [line.strip().lower() for line in file]
 
@@ -27,33 +27,33 @@ try:
         domain_name = f"rul.{tld}"
         print(f"Checking {domain_name}... ", end='')
 
-        # Buka halaman Niagahoster
+        # Open the Niagahoster page
         driver.get("https://www.niagahoster.co.id/domain-murah")
 
-        # Tunggu sampai elemen input dimuat
-        time.sleep(3)  # Bisa diganti dengan eksplisit wait jika diperlukan
+        # Wait until the input element is loaded
+        time.sleep(3)  # Can be replaced with explicit wait if needed
 
-        # Temukan elemen input untuk nama domain
+        # Find the input element for the domain name
         search_input = driver.find_element(By.ID, "h-domain-finder-header-input")
 
-        # Masukkan nama domain yang ingin dicek
+        # Enter the domain name to be checked
         search_input.send_keys(domain_name)
 
-        # Tekan Enter untuk submit
+        # Press Enter to submit
         search_input.send_keys(Keys.RETURN)
 
-        # Tunggu beberapa saat sampai halaman selesai memuat
+        # Wait for a few seconds until the page is fully loaded
         time.sleep(5)
 
-        # Periksa apakah teks yang menunjukkan domain tersedia ada di halaman
+        # Check if the text indicating the domain is available is on the page
         if "Selamat! Domain yang Anda Cari Tersedia" in driver.page_source:
-            print("[+] Tersedia")
+            print("[+] Available")
             with open('available_tlds.txt', 'a') as available_tlds_file:
                 available_tlds_file.write(domain_name + '\n')
         else:
-            print("[x] Tidak Tersedia")
+            print("[x] Not Available")
             with open('not_available_tlds.txt', 'a') as not_available_tlds_file:
                 not_available_tlds_file.write(domain_name + '\n')
 finally:
-    # Tutup browser
+    # Close the browser
     driver.quit()
