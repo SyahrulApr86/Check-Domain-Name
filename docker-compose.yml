@@ -1,0 +1,6 @@
+services:
+  cek-domain:
+    build: .
+    volumes:
+      - .:/app
+    command: python cek_domain.py
